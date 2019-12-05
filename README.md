@@ -3,7 +3,7 @@ Pytorch深度学习<br>
 使用torch实现机器学习到深度学网络
 # torch 基础
 ### 1. torch.Tensor
-![](https://github.com/orangerfun/Pytorch/rawt/master/tensor.png)
+![](https://github.com/orangerfun/Pytorch/raw/master/tensor.png)
 `torch.Tensor`是默认的tensor类型(`torch.FloatTensor`）的简称<br>
 ### 2. torch.index_select(x, dim , indices)
 在数据x中按照dim指定的维度选出indice指定的数据，例如：
