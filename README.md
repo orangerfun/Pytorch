@@ -74,7 +74,7 @@ tensor([[0.1000],
 * torch.max()[1].data 只返回variable中的数据部分（去掉Variable containing:）
 * torch.max()[1].data.numpy() 把数据转化成numpy ndarry
 * torch.max()[1].data.numpy().squeeze() 把数据条目中维度为1 的删除掉
-* torch.max(tensor1,tensor2) element-wise 比较tensor1 和tensor2 中的元素，返回较大的那个值
+* **torch.max(input=tensor1,other=tensor2) element-wise 比较tensor1 和tensor2 中的元素，返回较大的那个值**
 ```python3
 import torch
 import numpy as np
