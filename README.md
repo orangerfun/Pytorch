@@ -38,3 +38,32 @@ z:      tensor([[  1.,   3.],
 z:     tensor([[  1.,   3.],
               [  9.,  11.]])
 ````
+### 3.按维度求和
+给定⼀个 Tensor 矩阵 X 。我们可以只对其中同⼀列（ dim=0 ）或同⼀⾏（ dim=1 ）的元素求和，并在结果中保留⾏和列这两个维度（ keepdim=True ）
+```
+X = torch.tensor([[1, 2, 3], [4, 5, 6]])
+print(X.sum(dim=0, keepdim=True))
+print(X.sum(dim=1, keepdim=True))
+```
+result:
+```
+tensor([[5, 7, 9]])
+tensor([[ 6],
+ [15]])
+```
+**大多数情况下，dim = 1表示在一行中求均值/求和等；而dim = 0则表示在一列中求...**
+
+### 4.torch.gather(input, dim, index)
+沿给定轴dim，将输入索引张量index指定位置的值进行聚合<br>
+也可写成input.gather(dim, index)
+```
+y_hat = torch.tensor([[0.1, 0.3, 0.6], [0.3, 0.2, 0.5]])
+y = torch.LongTensor([0, 2])
+y_hat.gather(1, y.view(-1, 1))    #dim =1 表示从每行中取数
+```
+result:
+```
+tensor([[0.1000],
+ [0.5000]])
+
+```
