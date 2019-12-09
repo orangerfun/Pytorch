@@ -67,3 +67,34 @@ tensor([[0.1000],
  [0.5000]])
 
 ```
+### torch.max(input, dim, keepdim=False, out=None)
+按维度dim 返回最大值和对应的索引<br>
+* torch.max()[0]， 只返回最大值的每个数
+* troch.max()[1]， 只返回最大值的每个索引
+* torch.max()[1].data 只返回variable中的数据部分（去掉Variable containing:）
+* torch.max()[1].data.numpy() 把数据转化成numpy ndarry
+* torch.max()[1].data.numpy().squeeze() 把数据条目中维度为1 的删除掉
+* **torch.max(input=tensor1,other=tensor2) element-wise 比较tensor1 和tensor2 中的元素，返回较大的那个值**
+```python3
+import torch
+import numpy as np
+x = torch.tensor(np.random.normal(0,1,(2,3)), dtype=torch.float32)
+print(x)
+print(torch.max(input=x, dim=1))
+print(torch.max(input=x, dim=1)[0].numpy())
+print(torch.max(input=x,other=torch.tensor(0.0)))
+```
+result:
+```
+tensor([[-1.2088, -0.9236,  2.1777],
+        [-1.3959,  0.3768,  0.3697]])
+
+torch.return_types.max(
+values=tensor([2.1777, 0.3768]),
+indices=tensor([2, 1]))
+
+[2.1776507 0.3768374]
+
+tensor([[0.0000, 0.0000, 2.1777],
+        [0.0000, 0.3768, 0.3697]])
+```
