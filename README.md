@@ -1,6 +1,9 @@
 # Pytorch
 Pytorch深度学习<br>
-使用torch实现机器学习到深度学网络
+使用torch实现机器学习到深度学网络,主要包括以下内容：<br>
+* 1.线性回归
+* 2.softmax回归
+* 3.多层感感知机
 # torch 基础
 ### 1. torch.Tensor
 ![](https://github.com/orangerfun/Pytorch/raw/master/tensor.png)
@@ -98,3 +101,7 @@ indices=tensor([2, 1]))
 tensor([[0.0000, 0.0000, 2.1777],
         [0.0000, 0.3768, 0.3697]])
 ```
+#  reference
+本内容主要参考：【[动手学深度学习](http://zh.d2l.ai/chapter_natural-language-processing/index.html)】<br>
+程序参考：(https://github.com/ShusenTang/Dive-into-DL-PyTorch)
+
