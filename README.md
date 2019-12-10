@@ -101,6 +101,33 @@ indices=tensor([2, 1]))
 tensor([[0.0000, 0.0000, 2.1777],
         [0.0000, 0.3768, 0.3697]])
 ```
+### torch.cat((tensorA, tensorB), dim=0)
+根据dim指定的维数拼接tensorA,B<br>
+```
+tensorA = torch.ones(2,3)
+tensorB = torch.zeros(2,3)
+tensorC = torch.cat((tensorA, tensorB),dim=0)
+print(tensorA)
+print(tensorB)
+print(tensorC)
+print(torch.cat((tensorA,tensorB),dim=1))
+```
+result:
+```
+tensor([[1., 1., 1.],
+        [1., 1., 1.]])
+        
+tensor([[0., 0., 0.],
+        [0., 0., 0.]])
+        
+tensor([[1., 1., 1.],
+        [1., 1., 1.],
+        [0., 0., 0.],
+        [0., 0., 0.]])
+        
+tensor([[1., 1., 1., 0., 0., 0.],
+        [1., 1., 1., 0., 0., 0.]])
+```
 #  reference
 本内容主要参考：【[动手学深度学习](http://zh.d2l.ai/chapter_natural-language-processing/index.html)】<br>
 程序参考：(https://github.com/ShusenTang/Dive-into-DL-PyTorch)
