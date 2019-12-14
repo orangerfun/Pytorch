@@ -70,7 +70,7 @@ tensor([[0.1000],
  [0.5000]])
 
 ```
-### torch.max(input, dim, keepdim=False, out=None)
+### 5.torch.max(input, dim, keepdim=False, out=None)
 按维度dim 返回最大值和对应的索引<br>
 * torch.max()[0]， 只返回最大值的每个数
 * troch.max()[1]， 只返回最大值的每个索引
@@ -101,7 +101,7 @@ indices=tensor([2, 1]))
 tensor([[0.0000, 0.0000, 2.1777],
         [0.0000, 0.3768, 0.3697]])
 ```
-### torch.cat((tensorA, tensorB), dim=0)
+### 6.torch.cat((tensorA, tensorB), dim=0)
 根据dim指定的维数拼接tensorA,B<br>
 ```
 tensorA = torch.ones(2,3)
@@ -128,6 +128,9 @@ tensor([[1., 1., 1.],
 tensor([[1., 1., 1., 0., 0., 0.],
         [1., 1., 1., 0., 0., 0.]])
 ```
+### 7. loss = torch.nn.CrossEntropy(size_average=False)
+几点注意事项：（1）size_average=False表示对一个batch的损失求和，不求均值；等于True表示对一个batch的样本求出的losss是均值，默认是True<br>
+(2) 传入loss(y_hat, y);其中y_hat是没有经过softmax的；y也没有one_hot
 #  reference
 本内容主要参考：【[动手学深度学习](http://zh.d2l.ai/chapter_natural-language-processing/index.html)】<br>
 程序参考：(https://github.com/ShusenTang/Dive-into-DL-PyTorch)
