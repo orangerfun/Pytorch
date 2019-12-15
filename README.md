@@ -131,6 +131,40 @@ tensor([[1., 1., 1., 0., 0., 0.],
 ### 7. loss = torch.nn.CrossEntropy(size_average=False)
 几点注意事项：（1）size_average=False表示对一个batch的损失求和，不求均值；等于True表示对一个batch的样本求出的losss是均值，默认是True<br>
 (2) 传入loss(y_hat, y);其中y_hat是没有经过softmax的；y也没有one_hot
+```python3
+import torch
+import numpy as np
+def softmax(x):
+	e_x = x.exp()
+	exsum = e_x.sum(dim = 1, keepdim=True)
+	return e_x/exsum
+
+def cross_entropy_loss(y_hat, y):
+	return -torch.log(y_hat.gather(dim=1, index=y.view(-1,1)))
+
+pred = torch.tensor([[1,2,3], [2,3,2]],dtype=torch.float)
+label = torch.tensor([1,1])
+s_pred = softmax(pred)
+
+print("自己计算:",cross_entropy_loss(s_pred, label))
+print("自己计算+mean:", cross_entropy_loss(s_pred, label).mean())
+print("自己计算+sum:",cross_entropy_loss(s_pred,label).sum())
+
+loss = torch.nn.CrossEntropyLoss()
+print("内置函数计算：",loss(pred, label))
+
+loss = torch.nn.CrossEntropyLoss(size_average=False)
+print("内置函数+size_average=False:", loss(pred, label))
+```
+result:
+```
+自己计算: tensor([[1.4076],
+                 [0.5514]])
+自己计算+mean: tensor(0.9795)
+自己计算+sum: tensor(1.9591)
+内置函数计算： tensor(0.9795)
+内置函数+size_average=False: tensor(1.9591)
+```
 #  reference
 本内容主要参考：【[动手学深度学习](http://zh.d2l.ai/chapter_natural-language-processing/index.html)】<br>
 程序参考：(https://github.com/ShusenTang/Dive-into-DL-PyTorch)
