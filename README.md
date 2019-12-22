@@ -1,9 +1,12 @@
-# Pytorch
-Pytorch深度学习<br>
-使用torch实现机器学习到深度学网络,主要包括以下内容：<br>
-* 1.线性回归
-* 2.softmax回归
-* 3.多层感感知机
+# 目录
+* 1. torch.Tensor
+* 2. torch.index_select
+* 3. tensor.sum
+* 4. torch.gather
+* 5. torch.max
+* 6. torch.cat
+* 7. torch.nn.CrossEntropyLoss
+* 8. tensor.data & tensor.detach
 # torch 基础
 ### 1. torch.Tensor
 ![](https://github.com/orangerfun/Pytorch/raw/master/tensor.png)
@@ -128,7 +131,7 @@ tensor([[1., 1., 1.],
 tensor([[1., 1., 1., 0., 0., 0.],
         [1., 1., 1., 0., 0., 0.]])
 ```
-### 7. loss = torch.nn.CrossEntropy(size_average=False)
+### 7. loss = torch.nn.CrossEntropyLoss(size_average=False)
 几点注意事项：（1）size_average=False表示对一个batch的损失求和，不求均值；等于True表示对一个batch的样本求出的losss是均值，默认是True<br>
 (2) 传入loss(y_hat, y);其中y_hat是没有经过softmax的；y也没有one_hot
 ```python3
@@ -165,7 +168,61 @@ result:
 内置函数计算： tensor(0.9795)
 内置函数+size_average=False: tensor(1.9591)
 ```
-#  reference
+### 8. tensor.data & tensor.detach
+**(1)tensor.data**<br>
+`x.data` 返回和 x 的相同数据 tensor,而且这个新的tensor和原来的tensor是共用数据的，一者改变，另一者也会跟着改变，而且新分离得到的tensor的`require s_grad = False`, 即不可求导的
+```python3
+import torch
+a = torch.tensor([1,2,3.], requires_grad = True)
+out = a.sigmoid()
+c = out.data  # 需要走注意的是，通过.data “分离”得到的的变量会和原来的变量共用同样的数据，而且新分离得到的张量是不可求导的，c发生了变化，原来的张量也会发生变化
+c.zero_()     # 改变c的值，原来的out也会改变
+print(c.requires_grad)
+print(c)
+print(out.requires_grad)
+print(out)
+print("----------------------------------------------")
+out.sum().backward() # 对原来的out求导，
+print(a.grad)  # 不会报错，但是结果却并不正确
+'''运行结果为：
+False
+tensor([0., 0., 0.])
+True
+tensor([0., 0., 0.], grad_fn=<SigmoidBackward>)
+----------------------------------------------
+tensor([0., 0., 0.])
+'''
+```
+**(2)tensor.detach**<br>
+`x.detach() `返回和 x 的相同数据 tensor,而且这个新的tensor和原来的tensor是共用数据的，一者改变，另一者也会跟着改变，而且新分离得到的tensor的`require s_grad = False`, 即不可求导的
+```python3
+import torch
+a = torch.tensor([1,2,3.], requires_grad = True)
+out = a.sigmoid()
+c = out.detach()  # 需要走注意的是，通过.detach() “分离”得到的的变量会和原来的变量共用同样的数据，而且新分离得到的张量是不可求导的，c发生了变化，原来的张量也会发生变化
+c.zero_()     # 改变c的值，原来的out也会改变
+print(c.requires_grad)
+print(c)
+print(out.requires_grad)
+print(out)
+print("----------------------------------------------")
+out.sum().backward() # 对原来的out求导，
+print(a.grad)  # 此时会报错，错误结果参考下面,显示梯度计算所需要的张量已经被“原位操作inplace”所更改了。
+'''运行结果为：
+False
+tensor([0., 0., 0.])
+True
+tensor([0., 0., 0.], grad_fn=<SigmoidBackward>)
+----------------------------------------------
+RuntimeError: one of the variables needed for gradient computation has been modified by an inplace operation
+'''
+```
+**(3)两者比较**<br>
+从上面的例子可以看出，使用`tensor.data`时，由于我更改分离之后的变量值c,导致原来的张量out的值也跟着改变了，但是这种改变对于autograd是没有察觉的，它依然按照求导规则来求导，导致得出完全错误的导数值却浑然不知。它的风险性就是如果我再任意一个地方更改了某一个张量，求导的时候也没有通知我已经在某处更改了，导致得出的导数值完全不正确，故而风险大<br>
+使用`tensor.detach`时，由于我更改分离之后的变量值c,导致原来的张量out的值也跟着改变了，这个时候如果依然按照求导规则来求导，由于out已经更改了，所以不会再继续求导了，而是报错，这样就避免了得出完全牛头不对马嘴的求导结果。
+
+
+#  参考
 本内容主要参考：【[动手学深度学习](http://zh.d2l.ai/chapter_natural-language-processing/index.html)】<br>
 程序参考：(https://github.com/ShusenTang/Dive-into-DL-PyTorch)
 
