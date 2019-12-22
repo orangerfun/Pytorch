@@ -1,12 +1,12 @@
 # 目录
-* 1. torch.Tensor
-* 2. torch.index_select
-* 3. tensor.sum
-* 4. torch.gather
-* 5. torch.max
-* 6. torch.cat
-* 7. torch.nn.CrossEntropyLoss
-* 8. tensor.data & tensor.detach
+* 1.torch.Tensor
+* 2.torch.index_select
+* 3.tensor.sum
+* 4.torch.gather
+* 5.torch.max
+* 6.torch.cat
+* 7.torch.nn.CrossEntropyLoss
+* 8.tensor.data & tensor.detach
 # torch 基础
 ### 1. torch.Tensor
 ![](https://github.com/orangerfun/Pytorch/raw/master/tensor.png)
