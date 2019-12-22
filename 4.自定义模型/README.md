@@ -31,4 +31,27 @@ net = nn.ModuleDict({"linear":nn.Linear(784, 256), "act":nn.ReLU()})
 # 增加
 net["output"]=nn.Linear(256,10)
 ```
-# 5.
+# 5.总结
+虽然 `2、3、4中Sequential` 等类可以使模型构造更加简单，但直接继承 Module 类可以极⼤地拓展模型构
+造的灵活性
+```python3
+class FancyMLP(nn.Module):
+	def __init__(self):
+		super(FancyMLP,self).__init__()
+		self.rand_wieght=torch.rand((20,20),requires_grad=False) #该参数不可训练
+		self.linear = nn.Linear(20, 20)
+
+	def forward(self, x):
+		x = self.linear(x)
+		x = nn.functional.relu(torch.mm(x, self.rand_wieght.data)+1)
+		# 复用全连接层，相当于两个全连接层共享参数
+		x = self.linear(x)
+		# 控制流
+		while x.norm().item()>1:    #norm L2范数
+			x /= 2
+		if x.norm().item()<0.8:
+			x *= 10
+		return x.sum()
+net = FancyMLP()
+```
+
