@@ -54,4 +54,45 @@ class FancyMLP(nn.Module):
 		return x.sum()
 net = FancyMLP()
 ```
+# 6.初始化模型参数
+## 6.1 默认初始化
+定义好模型net后，torch会自动初始化参数，因此也可直接使用默认参数
+## 6.2 nn.init.noraml_()
+```python3
+# 初始化模型参数
+from torch.nn import init
+net = FancyMLP()
+# way1
+for param in net.parameters():
+	init.normal_(param, mean=0, std=0.01)
+# way2
+for name, param in net.named_parameters():
+	if "weight" in name:
+		init.normal_(param, mean=0, std=0.01)
+		print(name, param.data)
+```
+## 6.2自定义初始化
+```python3
+def init_weight_(tensor):
+	"""
+	args:
+		tensor:输入x
+	"""
+	with torch.no_grad():
+		# 令权重有⼀半概率初始化为0，有另⼀半概率初始化为[-10,-5]和[5,10]两个区间⾥均匀分布的随机数
+		tensor.uniform_(-10,10)
+		tensor *= (tensor.abs()>=5).float()
+for param in net.parameters():
+	init_weight_(param)
+```
 
+# 7.保存模型
+**保存**
+```python3
+torch.save(net.state_dict(),PATH)
+```
+**加载**
+```python3
+model = ModelClass(args)
+model.load_state_dict(torch.load(path)
+```
