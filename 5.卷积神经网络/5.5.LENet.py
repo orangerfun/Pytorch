@@ -33,7 +33,7 @@ import torchvision.transforms as transforms
 train_data = torchvision.datasets.FashionMNIST(root="./Datasets/FashionMNIST", train=True, transform=transforms.ToTensor())
 test_data = torchvision.datasets.FashionMNIST(root="./Datasets/FashionMNIST", train=True, transform=transforms.ToTensor())
 train_iter = torch.utils.data.DataLoader(train_data, batch_size=batch_size, shuffle=True)
-test_iter = torch.utils.data.DataLoader(train_data, batch_size=batch_size, shuffle=True)
+test_iter = torch.utils.data.DataLoader(test_data, batch_size=batch_size, shuffle=True)
 
 
 def evaluate_accuracy(data_iter, net, device):
