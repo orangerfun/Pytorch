@@ -16,3 +16,42 @@ torch.nn.Conv2d(in_channels, out_channels, kernel_size, stride=1, padding=0, dil
         stride: 步长;默认值是kernel_size,可以是tuple
         padding: 输入的每一条边补充0的层数
 ```
+# 2.卷积网络比较
+### 2.1 LeNet
+使用两个卷积层，每个卷积层后接最大池化层，每个卷积层都使用5x5的窗口，在输出上使用sigmoid激活函数，第⼀个卷积层输出通道数为6，第⼆个卷积层输出通道数则增加到16；最大池化层窗口大小为2x2，步幅也为2；卷积后接3个全连接层，最后一个全连接层用于分类.LeNet网络结构如下：<br>
+```python3
+self.conv = nn.Sequential(nn.Conv2d(1, 6, 5),\
+								nn.Sigmoid(),\
+								nn.MaxPool2d(2, 2),\
+								nn.Conv2d(6, 16, 5),\
+								nn.Sigmoid(),\
+								nn.MaxPool2d(2, 2))
+ ```
+ ### 2.2 AlexNet
+ AlexNet使⽤了8层卷积神经⽹络,中有5层卷积和2层全连接隐藏层，以及1个全连接输出层;AlexNet第⼀层中的卷积窗⼝形状是11x11;第⼆层中的卷积窗⼝形状减⼩到5x5,之后全采⽤3x3; 第⼀、第⼆和第五个卷积层之后都使⽤了窗⼝形状为3x3 、步幅为2的最⼤池化层;AlexNet将sigmoid激活函数改成了更加简单的ReLU激活函数;AlexNet通过丢弃法来控制全连接层的模型复杂度; AlexNet引⼊了⼤量的图像增⼴，如翻转、裁剪和颜⾊变化，从⽽进⼀步扩⼤数据集来缓解过拟合, AlexNet网络结构如下所示：
+ ```python3
+ self.conv = nn.Sequential(nn.Conv2d(1, 96, 11,4),  #in_channels, out_channels, kernel_size, stride, padding
+								nn.ReLU(),
+								nn.MaxPool2d(3,2), #kernel_size, stride
+								nn.Conv2d(96, 256, 5, 1, 2),
+								nn.ReLU(),
+								nn.MaxPool2d(3,2),
+								nn.Conv2d(256, 384, 3, 1, 1),
+								nn.ReLU(),
+								nn.Conv2d(384, 384, 3, 1, 1),
+								nn.ReLU(),
+								nn.Conv2d(384, 256, 3, 1, 1),
+								nn.ReLU(),
+								nn.MaxPool2d(3,2)
+								)
+		self.fc = nn.Sequential(nn.Linear(256*5*5, 4096),
+								nn.ReLU(),
+								nn.Dropout(0.5),
+								nn.Linear(4096, 4096),
+								nn.ReLU(),
+								nn.Dropout(0.5),
+								nn.Linear(4096, 10))
+ ```
+ ### 2.3 VGG
+ 
+ 
