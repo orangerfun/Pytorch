@@ -64,5 +64,34 @@ NiN提出了另外⼀个思路，即串联多个由卷积层和“全连接”�
 普通卷积网络结构如下：<br>
 
 	卷积层-->卷积层-->全链接层-->全连接层
+如下定义了NiN块， 由一个卷积层加两个充当全连接层的1x1卷积层串联而成：<br>
+```python3
+def nin_block(in_channels, out_channels, kernel_size, stride, padding):
+	blk = nn.Sequential(nn.Conv2d(in_channels, out_channels, kernel_size, stride, padding),
+						nn.ReLU(),
+						nn.Conv2d(out_channels, out_channels, kernel_size=1),
+						nn.ReLU(),
+						nn.Conv2d(out_channels, out_channels, kernel_size=1),
+						nn.ReLU())
+	return blk
+```
+NiN的卷积层设定和AlexNet有类似之处，NiN使⽤卷积窗⼝形状分别为11x11, 5x5,和3x3的卷积层，相应的输出通道数也与AlexNet中的⼀致。每个NiN块后接⼀个步幅为2、窗⼝形状为3x3的最⼤池化层。除使⽤NiN块以外，NiN还有⼀个设计与AlexNet显著不同：NiN去掉了AlexNet最后的3个全连接层，取⽽代之地，NiN使⽤了输出通道数等于标签类别数的NiN块然后使⽤全局平均池化层对每个通道中所有元素求平均并直接⽤于分类;全局平均池化层即窗⼝形状等于输⼊空间维形状的平均池化层;NiN的这个设计的好处是可以显著减⼩模型参数尺⼨，从⽽缓解过拟合。然⽽，该设计有时会造成获得有效模型的训练时间的增加<br>
+NiN网络结构如下：<br>
+```python3
+net = nn.Sequential(nin_block(1,96,11,4,0),
+					nn.MaxPool2d(kernel_size=3, stride=2),
+					nin_block(96, 256, 5, 1, 2),
+					nn.MaxPool2d(kernel_size=3, stride=2),
+					nin_block(256, 384, 3, 1, 1),
+					nn.MaxPool2d(kernel_size=3, stride=2),
+					nn.Dropout(0.5),
+					nin_block(384, 10, 3, 1, 1),      # 标签类别数为10
+					GlobalAvgPool2d(),                # 全局最大池化，shape = [batchsize, channels(10), 1, 1]
+					FlattenLayer())                   # 将四维的输出转成二维输出，shape:[batch_size,10]
+```
+**小结**<br>
+* NiN重复使⽤由卷积层和代替全连接层的1x1卷积层构成的NiN块来构建深层⽹络
+* NiN去除了容易造成过拟合的全连接输出层，⽽是将其替换成输出通道数等于标签类别数的NiN
+块和全局平均池化层
 
 
