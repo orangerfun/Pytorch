@@ -95,6 +95,32 @@ net = nn.Sequential(nin_block(1,96,11,4,0),
 块和全局平均池化层
 
 ### 2.5 GoogleNet
+GoogLeNet中的基础卷积块叫作Inception块,结构如下图所示：<br>
+![](https://github.com/orangerfun/Pytorch/raw/master/5.卷积神经网络/inception.png)
+
+Inception块⾥有4条并⾏的线路。前3条线路使⽤窗⼝⼤⼩分别是1x1, 3x3 和5x5的卷积层来抽取不同空间尺⼨下的信息，其中中间2个线路会对输⼊先做1x1卷积来减少输⼊通道数，以降低模型复杂度。第四条线路则使⽤3x3最⼤池化层，后接1x1卷积层来改变通道数。4条线路都使⽤了合适的填充来使输⼊与输出的⾼和宽⼀致。最后我们将每条线路的输出在通道维上连结，并输⼊接下来的层中去<br>
+`Inception`的网络结构如下：<br>
+```python3
+class Inception(nn.Module):
+	def __init__(self, in_c, c1, c2, c3, c4):
+		super(Inception, self).__init__()
+		# 线路1, 单1x1卷积层
+		self.p1_1 = nn.Conv2d(in_c, c1, kernel_size=1)
+		# 线路2, 1x1卷积后接3x3卷积层
+		self.p2_1 = nn.Conv2d(in_c, c2[0], kernel_size=1)
+		self.p2_2 = nn.Conv2d(c2[0], c2[1], kernel_size=3, padding=1)
+		# 线路3, 1x1卷积后接5x5卷积层
+		self.p3_1 = nn.Conv2d(in_c, c3[0], kernel_size=1)
+		self.p3_2 = nn.Conv2d(c3[0], c3[1], kernel_size=5, padding=2)
+		# 线路4,3x3最大化池化层后接1x1卷积层
+		self.p4_1 = nn.MaxPool2d(kernel_size = 3, stride=1, padding=1)
+		self.p4_2 = nn.Conv2d(in_c, c4, kernel_size=1)
+```
+
+GoogLeNet在主体卷积部分中使⽤5个模块每个模块之间使⽤步幅为2的3x3最⼤池化层来减⼩输出⾼宽,第⼀模块使⽤⼀个64通道的 7x7 卷积层,第二，第三...block具体结构见程序`5.9GoogleNet.py`<br>
+**小结**
+* Inception块是⼀个有4条线路的⼦⽹络。它通过不同窗⼝形状的卷积层和最⼤池化层来并⾏抽取信息，并使⽤1x1卷积层减少通道数从⽽降低模型复杂度
+* GoogLeNet将多个设计精细的Inception块和其他层串联起来。其中Inception块的通道数分配之⽐是在ImageNet数据集上通过⼤量的实验得来的
 
 
 
