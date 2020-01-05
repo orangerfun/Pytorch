@@ -7,6 +7,7 @@
 * 6.torch.cat
 * 7.torch.nn.CrossEntropyLoss
 * 8.tensor.data & tensor.detach
+* 9.tensor.scatter_()
 # torch 基础
 ### 1. torch.Tensor
 ![](https://github.com/orangerfun/Pytorch/raw/master/tensor.png)
@@ -60,12 +61,12 @@ tensor([[ 6],
 **大多数情况下，dim = 1表示在一行中求均值/求和等；而dim = 0则表示在一列中求...**
 
 ### 4.torch.gather(input, dim, index)
-沿给定轴dim，将输入索引张量index指定位置的值进行聚合<br>
+沿给定轴dim，拿出索引张量index指定位置的值重新聚合成一个向量，新向量shape和index的shape相同<br>
 也可写成input.gather(dim, index)
 ```
 y_hat = torch.tensor([[0.1, 0.3, 0.6], [0.3, 0.2, 0.5]])
 y = torch.LongTensor([0, 2])
-y_hat.gather(1, y.view(-1, 1))    #dim =1 表示从每行中取数
+y_hat.gather(1, y.view(-1, 1))    #dim =1 表示从每行中取数， 即从第一行中拿出第0个数，从第二行中拿出第2个数，组成一个新向量
 ```
 result:
 ```
@@ -221,6 +222,30 @@ RuntimeError: one of the variables needed for gradient computation has been modi
 从上面的例子可以看出，使用`tensor.data`时，由于我更改分离之后的变量值c,导致原来的张量out的值也跟着改变了，但是这种改变对于autograd是没有察觉的，它依然按照求导规则来求导，导致得出完全错误的导数值却浑然不知。它的风险性就是如果我再任意一个地方更改了某一个张量，求导的时候也没有通知我已经在某处更改了，导致得出的导数值完全不正确，故而风险大<br>
 使用`tensor.detach`时，由于我更改分离之后的变量值c,导致原来的张量out的值也跟着改变了，这个时候如果依然按照求导规则来求导，由于out已经更改了，所以不会再继续求导了，而是报错，这样就避免了得出完全牛头不对马嘴的求导结果。
 
+
+### 9.tensor.scatter_(dim, index, src)
+将src按dim指定维度放入tensor中由index指定的位置， 其中src可以是一个数字，也可以是一个矩阵，具体见例子
+```python3
+print(torch.zeros(3,5).scatter_(0, torch.LongTensor([[0,1,2,0,0],[2,0,0,1,2]]), 1))
+# 把1按列的方向放入到zeros矩阵中torch.longTensor指定的位置
+输出：
+tensor([[1., 1., 1., 1., 1.],
+        [0., 1., 0., 1., 0.],
+        [1., 0., 1., 0., 1.]])
+```
+```python3
+x = torch.rand(2,5)
+print("x:", x)
+print(torch.zeros(3,5).scatter_(0, torch.LongTensor([[0,1,2,0,0],[2,0,0,1,2]]), x))
+输出：
+x: tensor([[0.4617, 0.9530, 0.2900, 0.8316, 0.4791],
+        [0.4218, 0.6741, 0.0549, 0.7547, 0.0645]])
+	
+tensor([[0.4617, 0.6741, 0.0549, 0.8316, 0.4791],
+        [0.0000, 0.9530, 0.0000, 0.7547, 0.0000],
+        [0.4218, 0.0000, 0.2900, 0.0000, 0.0645]])
+# 把x每行中的元素放入到index指定位置
+```
 
 #  参考
 本内容主要参考：【[动手学深度学习](http://zh.d2l.ai/chapter_natural-language-processing/index.html)】<br>
